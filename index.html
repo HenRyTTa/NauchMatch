@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>НаучMatch — Платформа научных экспериментов</title>
+<style>
+:root{
+  --bg:#f4f6fb; --bg2:#eef1f8; --card:rgba(255,255,255,.72); --card-solid:#ffffff;
+  --text:#1c2033; --muted:#5b6274; --line:rgba(28,32,51,.10);
+  --purple:#7c3aed; --cyan:#0891b2; --pink:#db2777;
+  --grad:linear-gradient(135deg,#7c3aed,#0891b2 55%,#ec4899);
+  --grad2:linear-gradient(135deg,#7c3aed,#ec4899);
+  --shadow:0 8px 30px rgba(28,32,51,.10);
+  --green:#16a34a; --green-bg:rgba(22,163,74,.15);
+  --red:#dc2626; --red-bg:rgba(220,38,38,.14);
+  --blue:#0369a1; --blue-bg:rgba(3,105,161,.14);
+  --glassblur:blur(14px);
+}
+[data-theme="dark"]{
+  --bg:#0f1220; --bg2:#141830; --card:rgba(30,34,58,.62); --card-solid:#1b2040;
+  --text:#eef0fb; --muted:#9aa1bd; --line:rgba(238,240,251,.10);
+  --purple:#a78bfa; --cyan:#22d3ee; --pink:#f472b6;
+  --grad:linear-gradient(135deg,#8b5cf6,#06b6d4 55%,#ec4899);
+  --grad2:linear-gradient(135deg,#8b5cf6,#ec4899);
+  --shadow:0 8px 30px rgba(0,0,0,.45);
+  --green:#4ade80; --green-bg:rgba(74,222,128,.16);
+  --red:#f87171; --red-bg:rgba(248,113,113,.18);
+  --blue:#38bdf8; --blue-bg:rgba(56,189,248,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;line-height:1.55}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(600px 300px at 12% 8%,rgba(124,58,237,.14),transparent),
+  radial-gradient(600px 300px at 88% 12%,rgba(8,145,178,.13),transparent),
+  radial-gradient(700px 340px at 50% 95%,rgba(236,72,153,.10),transparent);
+  transition:opacity .35s}
+.container{max-width:1100px;margin:0 auto;padding:0 18px}
+
+/* ===== HEADER ===== */
+header{position:sticky;top:0;z-index:50;backdrop-filter:var(--glassblur);-webkit-backdrop-filter:var(--glassblur);
+  background:var(--card);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:14px;padding:12px 0}
+.logo{font-size:26px;font-weight:800;cursor:pointer;white-space:nowrap;margin-left:12px}
+.logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center;margin-right:12px}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card-solid);
+  cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-ghost{padding:8px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card-solid);
+  color:var(--muted);cursor:pointer;font-size:14px;transition:.2s}
+.btn-ghost:hover{color:var(--text);box-shadow:var(--shadow)}
+
+/* ===== HERO ===== */
+.hero{text-align:center;padding:52px 0 34px}
+.badge{display:inline-block;padding:7px 18px;border-radius:999px;border:1px solid var(--line);
+  background:var(--card);backdrop-filter:var(--glassblur);font-size:13.5px;color:var(--muted);margin-bottom:18px}
+.hero h1{font-size:clamp(28px,5vw,44px);font-weight:800;margin-bottom:12px}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);max-width:560px;margin:0 auto 26px;font-size:16.5px}
+.role-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{padding:14px 28px;border-radius:14px;border:none;cursor:pointer;font-size:15.5px;font-weight:600;
+  color:#fff;transition:.22s;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(124,58,237,.35)}
+.btn-res{background:var(--grad2)}
+.btn-vol{background:linear-gradient(135deg,#0ea5e9,#06b6d4)}
+.counters{display:flex;gap:16px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.counter{background:var(--card);backdrop-filter:var(--glassblur);border:1px solid var(--line);border-radius:16px;
+  padding:14px 28px;min-width:150px;box-shadow:var(--shadow)}
+.counter .num{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.counter .lbl{font-size:13px;color:var(--muted)}
+
+/* ===== SECTION TITLES ===== */
+section{padding:40px 0}
+.sec-title{font-size:26px;font-weight:800;text-align:center;margin-bottom:6px}
+.sec-sub{text-align:center;color:var(--muted);margin-bottom:26px;font-size:15px}
+
+/* ===== CALENDAR ===== */
+.cal-scroll{overflow-x:auto;border-radius:18px;border:1px solid var(--line);background:var(--card);
+  backdrop-filter:var(--glassblur);box-shadow:var(--shadow)}
+.cal-grid{display:grid;grid-template-columns:58px repeat(7,minmax(120px,1fr));min-width:900px}
+.cal-head{padding:10px 4px;text-align:center;font-weight:700;font-size:13.5px;border-bottom:1px solid var(--line)}
+.cal-head.today{background:var(--grad2);color:#fff;border-radius:8px;margin:3px}
+.time{padding:8px 6px;font-size:12px;color:var(--muted);text-align:right;border-top:1px solid var(--line)}
+.cell{border-top:1px solid var(--line);border-left:1px solid var(--line);min-height:44px}
+.cell.today-col{background:rgba(124,58,237,.05)}
+[data-theme="dark"] .cell.today-col{background:rgba(167,139,250,.07)}
+.exp{margin:3px;padding:7px 8px;border-radius:11px;cursor:pointer;font-size:12.5px;line-height:1.35;
+  background:var(--card-solid);border:1.5px solid rgba(124,58,237,.45);box-shadow:0 3px 10px rgba(124,58,237,.18);
+  transition:.2s;overflow:hidden}
+.exp:hover{transform:scale(1.03);box-shadow:0 6px 18px rgba(124,58,237,.35)}
+.exp-c0{border-color:rgba(124,58,237,.55);background:linear-gradient(135deg,rgba(124,58,237,.16),rgba(124,58,237,.05));box-shadow:0 3px 12px rgba(124,58,237,.22)}
+.exp-c1{border-color:rgba(8,145,178,.55);background:linear-gradient(135deg,rgba(8,145,178,.16),rgba(8,145,178,.05));box-shadow:0 3px 12px rgba(8,145,178,.22)}
+.exp-c2{border-color:rgba(219,39,119,.55);background:linear-gradient(135deg,rgba(219,39,119,.16),rgba(219,39,119,.05));box-shadow:0 3px 12px rgba(219,39,119,.22)}
+.exp .nm{font-weight:700;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;margin:2px;white-space:nowrap}
+.tag-g{background:var(--green-bg);color:var(--green);border:1px solid var(--green)}
+.tag-r{background:var(--red-bg);color:var(--red);border:1px solid var(--red)}
+.tag-b{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue)}
+
+.tag-legend{margin-top:20px;background:var(--card);backdrop-filter:var(--glassblur);border:1px solid var(--line);
+  border-radius:16px;padding:16px 20px;box-shadow:var(--shadow)}
+.tag-legend h4{font-size:15px;margin-bottom:8px}
+.tag-legend .row{margin:6px 0;font-size:14px;color:var(--muted)}
+.tag-legend b{color:var(--text)}
+
+/* ===== HOW IT WORKS ===== */
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.how-card{background:var(--card);backdrop-filter:var(--glassblur);border:1px solid var(--line);border-radius:20px;
+  padding:26px;box-shadow:var(--shadow);opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.how-card.show{opacity:1;transform:none}
+.how-card h3{margin-bottom:16px;font-size:19px}
+.how-card .ic{font-size:30px;margin-bottom:8px}
+.step{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.step .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--grad);color:#fff;font-size:13px;
+  font-weight:700;display:flex;align-items:center;justify-content:center}
+.step .t{font-size:14.5px;color:var(--muted);padding-top:4px}
+
+footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);margin-top:20px}
+
+/* ===== MODALS ===== */
+.overlay{position:fixed;inset:0;background:rgba(10,12,25,.55);backdrop-filter:blur(4px);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.open{display:flex;animation:fadeIn .2s}
+.modal{background:var(--card-solid);border:1px solid var(--line);border-radius:20px;padding:28px;width:100%;
+  max-width:640px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:pop .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{margin-bottom:14px;font-size:21px}
+.modal .meta{font-size:13.5px;color:var(--muted);margin:3px 0}
+.modal .tags-row{margin:8px 0}
+.modal-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn-ok{background:var(--grad);flex:1;min-width:180px}
+.btn-cancel{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+/* ===== FORMS ===== */
+.steps{display:flex;gap:8px;margin-bottom:20px}
+.steps .st{flex:1;text-align:center;font-size:12px;color:var(--muted);padding:8px 4px;border-radius:10px;
+  background:var(--card);border:1px solid var(--line)}
+.steps .st.active{background:var(--grad);color:#fff;border:none;font-weight:700}
+.f-group{margin-bottom:14px}
+.f-group label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px}
+.f-group label .req{color:var(--pink)}
+.f-group input,.f-group select,.f-group textarea{width:100%;padding:11px 14px;border-radius:12px;font-size:14.5px;
+  font-family:inherit;border:1px solid var(--line);background:var(--bg);color:var(--text);transition:.2s}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.f-group textarea{resize:vertical;min-height:70px}
+.f-hint{font-size:12px;color:var(--muted);margin-top:4px}
+.chk-grid{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ===== CONSENT ===== */
+.consent-row{display:flex;align-items:flex-start;gap:10px;margin:18px 0 10px;font-size:13.5px;color:var(--muted);line-height:1.5}
+.consent-row input[type="checkbox"]{margin-top:3px;flex:none;width:18px;height:18px;cursor:pointer;accent-color:var(--purple)}
+.c-link{color:var(--purple);text-decoration:underline;cursor:pointer;font-weight:600;transition:.2s}
+.c-link:hover{color:var(--cyan);text-decoration:none}
+
+.consent-body{font-size:14px;line-height:1.65;color:var(--text)}
+.consent-body h4{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--text)}
+.consent-body p{margin-bottom:12px;color:var(--muted)}
+.consent-note{margin-top:20px;padding:12px 16px;background:var(--blue-bg);border-left:3px solid var(--blue);
+  border-radius:8px;font-size:12.5px;color:var(--blue);line-height:1.5}
+
+/* ===== MODERATOR PANEL ===== */
+#modPage{display:none;min-height:100vh;padding-bottom:40px}
+.mod-head{display:flex;align-items:center;gap:14px;padding:20px 0}
+.mod-head h2{font-size:24px}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tab{padding:10px 20px;border-radius:12px;cursor:pointer;font-size:14px;border:1px solid var(--line);
+  background:var(--card);color:var(--muted);transition:.2s}
+.tab.active{background:var(--grad);color:#fff;border:none;font-weight:600}
+.app-card{background:var(--card);backdrop-filter:var(--glassblur);border:1px solid var(--line);border-radius:16px;
+  padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.app-card .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.app-card .nm{font-weight:700;font-size:16px}
+.app-card .who{color:var(--muted);font-size:13px}
+.app-actions{display:flex;gap:10px;margin-top:14px}
+.btn-approve{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border:none;border-radius:11px;
+  padding:9px 18px;cursor:pointer;font-weight:600;font-family:inherit}
+.btn-reject{background:var(--red-bg);color:var(--red);border:1px solid var(--red);border-radius:11px;padding:9px 18px;cursor:pointer;font-weight:600;font-family:inherit}
+.btn-details{background:var(--card-solid);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:9px 18px;cursor:pointer;font-family:inherit}
+.full-form{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px;display:none}
+.full-form.open{display:block;animation:fadeIn .25s}
+.ff-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.ff-item{font-size:13.5px}
+.ff-item .k{color:var(--muted);font-size:12px}
+.ff-item .v{font-weight:600}
+.ff-item.wide{grid-column:1/-1}
+.ff-item .v .tag{font-size:11px}
+
+/* ===== TOASTS ===== */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--card-solid);border:1px solid var(--line);border-left:4px solid var(--purple);
+  border-radius:12px;padding:13px 18px;font-size:14px;box-shadow:var(--shadow);animation:slideIn .3s;max-width:340px}
+.toast.ok{border-left-color:var(--green)}
+.toast.err{border-left-color:var(--red)}
+@keyframes slideIn{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
+
+@media(max-width:760px){
+  .how-grid{grid-template-columns:1fr}
+  .ff-grid{grid-template-columns:1fr}
+  .hero{padding:36px 0 26px}
+  .counter{min-width:110px;padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="logo" onclick="goHome()">Науч<b>Match</b></div>
+    <div class="nav-right">
+      <button type="button" class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Переключить тему">🌙</button>
+      <button type="button" class="btn-ghost" onclick="openMod()">Модератор</button>
+    </div>
+  </div>
+</header>
+
+<main id="mainPage">
+  <div class="container">
+    <div class="hero">
+      <div class="badge">✨ Твои задачки — испытуемых пачки</div>
+      <h1>Связь <span>исследователей</span> и добровольцев</h1>
+      <p>Выберите свою роль, чтобы начать. Исследователи публикуют эксперименты, добровольцы записываются на участие.</p>
+      <div class="role-btns">
+        <button type="button" class="btn btn-res" onclick="openResForm()">Я — Исследователь 📝</button>
+        <button type="button" class="btn btn-vol" onclick="goCalendar()">Я — Доброволец 🙋</button>
+      </div>
+      <div class="counters">
+        <div class="counter"><div class="num" id="cntExp">3</div><div class="lbl">Экспериментов</div></div>
+        <div class="counter"><div class="num" id="cntVol">127</div><div class="lbl">Добровольцев</div></div>
+        <div class="counter"><div class="num">41</div><div class="lbl">Завершено</div></div>
+      </div>
+    </div>
+
+    <section id="calendar">
+      <div class="sec-title">Календарь</div>
+      <div class="sec-sub">Нажмите на ячейку, чтобы узнать подробности и записаться</div>
+      <div class="cal-scroll"><div class="cal-grid" id="calGrid"></div></div>
+
+      <div class="tag-legend">
+        <h4>Расшифровка хэштегов сайта:</h4>
+        <div class="row"><span class="tag tag-g">#Правши</span> <span class="tag tag-g">#Студенты</span> <span class="tag tag-g">#18–35 лет</span> — зелёные: критерии <b>включения</b> (кто подходит)</div>
+        <div class="row"><span class="tag tag-r">#Курит</span> <span class="tag tag-r">#Ночные смены</span> — красные: критерии <b>исключения</b> (кто не подходит)</div>
+        <div class="row"><span class="tag tag-b">#Опрос</span> <span class="tag tag-b">#Сон</span> <span class="tag tag-b">#Компьютерный тест</span> <span class="tag tag-b">#Психология</span> <span class="tag tag-b">#Аудиотест</span> — синие: <b>описание эксперимента</b> (о чём исследование)</div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="sec-title">Как это работает</div>
+      <div class="sec-sub">Четыре простых шага для каждой роли</div>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="ic">🔬</div>
+          <h3>Для исследователей</h3>
+          <div class="step"><div class="n">1</div><div class="t">Заполните форму с описанием эксперимента</div></div>
+          <div class="step"><div class="n">2</div><div class="t">Отправьте заявку на модерацию</div></div>
+          <div class="step"><div class="n">3</div><div class="t">После одобрения эксперимент появится в календаре</div></div>
+          <div class="step"><div class="n">4</div><div class="t">Получайте уведомления о записавшихся добровольцах</div></div>
+        </div>
+        <div class="how-card">
+          <div class="ic">🙋</div>
+          <h3>Для добровольцев</h3>
+          <div class="step"><div class="n">1</div><div class="t">Откройте календарь экспериментов</div></div>
+          <div class="step"><div class="n">2</div><div class="t">Нажмите на интересующую ячейку</div></div>
+          <div class="step"><div class="n">3</div><div class="t">Изучите подробности эксперимента</div></div>
+          <div class="step"><div class="n">4</div><div class="t">Запишитесь и получите подтверждение на почту</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <footer>© 2026 НаучMatch. Платформа для связи исследователей и добровольцев ННГУ.</footer>
+</main>
+
+<main id="modPage" style="display:none">
+  <div class="container">
+    <div class="mod-head">
+      <button type="button" class="btn-ghost" onclick="goHome()">← На сайт</button>
+      <h2>Панель модератора</h2>
+    </div>
+    <div class="tabs">
+      <div type="button" class="tab active" id="tabExp" onclick="switchTab('exp')">Заявки на эксперименты</div>
+      <div type="button" class="tab" id="tabVol" onclick="switchTab('vol')">Записи добровольцев</div>
+    </div>
+    <div id="modExpList"></div>
+    <div id="modVolList" style="display:none"></div>
+  </div>
+</main>
+
+<div class="overlay" id="ovDetails" onclick="if(event.target===this)closeOv('ovDetails')">
+  <div class="modal" id="detailsBody"></div>
+</div>
+
+<div class="overlay" id="ovRes" onclick="if(event.target===this)closeOv('ovRes')">
+  <div class="modal">
+    <h3>Заявка на эксперимент</h3>
+    <p style="color:var(--muted);font-size:13.5px;margin-bottom:18px">Заполните информацию о вашем эксперименте. После проверки модератором он появится в календаре.</p>
+    <div class="steps">
+      <div class="st active" id="st1">1 Контакты</div>
+      <div class="st" id="st2">2 О вас</div>
+      <div class="st" id="st3">3 Эксперимент</div>
+      <div class="st" id="st4">4 Требования</div>
+    </div>
+    <div id="resForm"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-cancel" onclick="closeOv('ovRes')">Отмена</button>
+      <button type="button" class="btn btn-cancel" id="btnPrev" onclick="resPrev()" style="display:none">← Назад</button>
+      <button type="button" class="btn btn-ok" id="btnNext" onclick="resNext()">Далее →</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ovSignup" onclick="if(event.target===this)closeOv('ovSignup')">
+  <div class="modal" style="max-width:460px">
+    <h3 id="signupTitle">Записаться на эксперимент</h3>
+    <div class="f-group"><label>ФИО <span class="req">*</span></label><input id="svFio" placeholder="Иванов Иван Иванович"></div>
+    <div class="f-group"><label>Возраст <span class="req">*</span></label><input id="svAge" type="number" min="14" max="99" placeholder="20"></div>
+    <div class="f-group"><label>Пол <span class="req">*</span></label>
+      <select id="svSex"><option value="">Выберите…</option><option>Мужской</option><option>Женский</option><option>Не указывать</option></select></div>
+    <div class="f-group"><label>Электронная почта <span class="req">*</span></label><input id="svMail" type="email" placeholder="ivanov@unn.ru">
+      <div class="f-hint">На эту почту придёт подтверждение записи</div></div>
+    <div class="consent-row"><input type="checkbox" id="svConsent">
+      <span>Я даю <span class="c-link" onclick="openConsent(event)">согласие</span> на обработку персональных данных</span></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-cancel" onclick="closeOv('ovSignup')">Отмена</button>
+      <button type="button" class="btn btn-ok" onclick="submitSignup()">Записаться</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ovConsent" onclick="if(event.target===this)closeOv('ovConsent')">
+  <div class="modal" style="max-width:600px;max-height:82vh;overflow:auto">
+    <h3>Согласие на обработку персональных данных</h3>
+    <div class="consent-body">
+      <p>Оставляя заявку или запись на платформе «НаучMatch», я даю согласие оператору платформы — НаучMatch (ННГУ) — на обработку моих персональных данных на следующих условиях:</p>
+      <h4>1. Какие данные обрабатываются</h4>
+      <p>Фамилия, имя, отчество; возраст; пол; адрес электронной почты; а также сведения, которые я добровольно указываю при записи (например, соответствие критериям эксперимента).</p>
+      <h4>2. Цели обработки</h4>
+      <p>Регистрация моей записи на эксперимент; связь со мной по вопросам участия; отправка подтверждения записи и уведомлений о статусе заявки; ведение учёта участников исследователем, проводящим эксперимент.</p>
+      <h4>3. Срок действия и отзыв согласия</h4>
+      <p>Согласие действует до момента его отзыва. Отозвать его можно в любой момент, направив запрос на почту платформы или сообщив исследователю. После отзыва мои данные удаляются; это не отменяет уже состоявшихся записей и подтверждений.</p>
+      <h4>4. Подтверждения</h4>
+      <p>Я подтверждаю, что достиг(ла) возраста 18 лет либо даю согласие с разрешения законного представителя, а также что указываю данные о себе достоверно и добровольно.</p>
+      <div class="consent-note">Это образец согласия для прототипа. Перед публикацией рабочего сайта текст нужно согласовать с юристом и привести в соответствие с политикой обработки персональных данных организации (152-ФЗ).</div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ok" onclick="closeOv('ovConsent')">Понятно</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ================= UTILS ================= */
+function escapeHTML(str) {
+  if (typeof str !== 'string') return str || '';
+  return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+}
+
+/* ================= THEME ================= */
+function toggleTheme(){
+  const h=document.documentElement;
+  const next=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',next);
+  document.getElementById('themeBtn').textContent=next==='dark'?'☀️':'🌙';
+  localStorage.setItem('nm-theme',next);
+}
+(function(){
+  const t=localStorage.getItem('nm-theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';
+})();
+
+/* ================= DATA ================= */
+const experiments=[
+ {id:1,name:'Сон и вечерние привычки',dir:'Психология сна',
+  desc:'Опрос о режиме сна и вечерних привычках. Заполнение анкеты занимает 15 минут.',
+  why:'Участие помогает понять связь сна и успеваемости',
+  dur:'15',sess:'1',d1:'16.11.2026',d2:'30.11.2026',time:'10:00–18:00',
+  place:'Ауд. 3312, пр. Гагарина, 23',need:20,sex:'Любой',age1:18,age2:25,
+  res:'Анна Смирнова, аспирант',org:'Факультет социальных наук, кафедра психологии',
+  mail:'smirnova@unn.ru',
+  day:0,start:10,end:12,
+  inc:['#Студенты'],exc:['#Ночные смены'],des:['#Опрос','#Сон','#Психология']},
+ {id:2,name:'Зрительное внимание',dir:'Когнитивные исследования',
+  desc:'Компьютерный тест на зрительное внимание. Смотрите на экран и нажимайте кнопку при появлении цели.',
+  why:'Интересный тест, по итогам — расшифровка ваших результатов',
+  dur:'45',sess:'1',d1:'16.11.2026',d2:'30.11.2026',time:'11:00–17:00',
+  place:'Лаб. 214, пр. Гагарина, 23',need:15,sex:'Любой',age1:18,age2:35,
+  res:'Дмитрий Кузнецов, старший преподаватель',org:'Институт биологии и биомедицины',
+  mail:'kuznetsov@unn.ru',
+  day:1,start:11,end:13,
+  inc:['#Правши','#18–35 лет'],exc:['#Астигматизм'],des:['#Компьютерный тест','#Зрение']},
+ {id:3,name:'Аудио-тест памяти',dir:'Нейрофизиология',
+  desc:'Прослушивание коротких аудиофрагментов и проверка запоминания.',
+  why:'Простая и увлекательная процедура, участие в науке',
+  dur:'30',sess:'2',d1:'16.11.2026',d2:'30.11.2026',time:'14:00–19:00',
+  place:'Ауд. 205, пр. Гагарина, 23',need:25,sex:'Любой',age1:18,age2:30,
+  res:'Мария Волкова, магистрант',org:'Институт биологии и биомедицины',
+  mail:'volkova@unn.ru',
+  day:3,start:14,end:16,
+  inc:['#Правши'],exc:['#Курит'],des:['#Аудио','#Память','#Аудиотест']}
+];
+
+let applications=[
+ {id:101,status:'pending',
+  mail:'petrova@unn.ru',fio:'Елена Петрова, аспирантка',post:'Аспирантка 2 года',
+  org:'Филологический факультет, кафедра иностранных языков',
+  name:'Влияние музыки на концентрацию',dir:'Психология внимания',
+  descr:'Слушая разные жанры музыки, участники выполняют простые задачи на концентрацию внимания. Ничего сложного и неприятного — обычные головоломки под музыку.',
+  why:'Уютная атмосфера, наушники, головоломки',
+  dur:'40',sess:'2',d1:'20.11.2026',d2:'15.12.2026',time:'по договорённости',
+  place:'Ауд. 410, ул. Большая Покровская, 38',need:18,sex:'Любой',age1:17,age2:26,
+  inc:['#Студенты','#18–35 лет'],exc:[],des:['#Опрос','#Аудио']},
+ {id:102,status:'pending',
+  mail:'orlova@unn.ru',fio:'Ольга Орлова, младший научный сотрудник',post:'Младший научный сотрудник',
+  org:'Институт биологии и биомедицины, лаборатория нейробиологии',
+  name:'Реакция на свет и звук',dir:'Сенсорные системы',
+  descr:'Короткие световые и звуковые сигналы, на которые нужно реагировать кнопкой. Измеряем скорость реакции.',
+  why:'Всё занимает полчаса, после — чай и булочки',
+  dur:'30',sess:'1',d1:'25.11.2026',d2:'10.12.2026',time:'14:00–18:00',
+  place:'Лаб. 108, пр. Гагарина, 23',need:12,sex:'Любой',age1:18,age2:40,
+  inc:['#Правши'],exc:['#Дальтонизм'],des:['#Компьютерный тест']}
+];
+
+let volRecords=[
+ {id:201,status:'pending',exp:'Сон и вечерние привычки',fio:'Игорь Морозов',age:21,sex:'Мужской',mail:'morozov@unn.ru'},
+ {id:202,status:'pending',exp:'Аудио-тест памяти',fio:'Ксения Лебедева',age:19,sex:'Женский',mail:'lebedeva@nn.ru'}
+];
+
+/* ================= CALENDAR ================= */
+const days=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+function renderCal(){
+  const g=document.getElementById('calGrid');
+  const now=new Date(); 
+  const todayIdx=Math.min(Math.max((now.getDay()+6)%7,0),6);
+  let h='<div class="cal-head" style="border:none;grid-column:1;grid-row:1"></div>';
+  for(let d=0;d<7;d++) h+='<div class="cal-head'+(d===todayIdx?' today':'')+'" style="grid-column:'+(d+2)+';grid-row:1">'+days[d]+'</div>';
+  
+  for(let hr=7;hr<=21;hr++){
+    const r=hr-5;
+    h+='<div class="time" style="grid-column:1;grid-row:'+r+'">'+hr+':00</div>';
+    for(let d=0;d<7;d++) h+='<div class="cell'+(d===todayIdx?' today-col':'')+'" style="grid-column:'+(d+2)+';grid-row:'+r+'" data-cell="'+d+'-'+hr+'"></div>';
+  }
+  g.innerHTML=h;
+  
+  experiments.forEach((e,i)=>{
+    const cell=g.querySelector('[data-cell="'+e.day+'-'+e.start+'"]');
+    if(!cell) return;
+    const span=e.end-e.start;
+    const r=e.start-5;
+    cell.style.gridRow = r + ' / span ' + span;
+    cell.style.borderTop='none';
+    const pal=['c0','c1','c2'][i%3];
+    cell.innerHTML='<div class="exp exp-'+pal+'" onclick="openDetails('+e.id+')">'+
+      '<div class="nm">'+escapeHTML(e.name)+'</div>'+
+      '<div>'+(e.des||[]).map(t=>'<span class="tag tag-b">'+escapeHTML(t)+'</span>').join('')+
+      (e.inc||[]).map(t=>'<span class="tag tag-g">'+escapeHTML(t)+'</span>').join('')+
+      (e.exc||[]).map(t=>'<span class="tag tag-r">'+escapeHTML(t)+'</span>').join('')+'</div></div>';
+    for(let k=1;k<span;k++){
+      const below=g.querySelector('[data-cell="'+e.day+'-'+(e.start+k)+'"]');
+      if(below) below.style.borderTop='none';
+    }
+  });
+}
+
+function goCalendar(){
+  document.getElementById('mainPage').style.display='block';
+  document.getElementById('modPage').style.display='none';
+  const c=document.getElementById('calendar');
+  c.scrollIntoView({behavior:'smooth'});
+  c.style.transition='box-shadow .4s';c.style.boxShadow='0 0 0 4px rgba(124,58,237,.35)';
+  setTimeout(()=>c.style.boxShadow='none',1400);
+}
+function goHome(){
+  document.getElementById('mainPage').style.display='block';
+  document.getElementById('modPage').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= DETAILS ================= */
+function openDetails(id){
+  const e=experiments.find(x=>x.id===id);
+  if(!e) return;
+  document.getElementById('detailsBody').innerHTML=
+    '<h3>'+escapeHTML(e.name)+'</h3>'+
+    '<div class="meta">🔬 '+escapeHTML(e.dir)+'</div>'+
+    '<div class="meta">👤 '+escapeHTML(e.res)+' — '+escapeHTML(e.org)+'</div>'+
+    '<div class="meta">📅 '+escapeHTML(e.d1)+' — '+escapeHTML(e.d2)+', время: '+escapeHTML(e.time)+'</div>'+
+    '<div class="meta">📍 '+escapeHTML(e.place)+'</div>'+
+    '<div class="meta">⏱ Сеанс: '+escapeHTML(e.dur)+' мин × '+escapeHTML(e.sess)+', нужно испытуемых: '+escapeHTML(e.need)+'</div>'+
+    '<div class="meta">👥 Пол: '+escapeHTML(e.sex)+', возраст: '+escapeHTML(e.age1)+'–'+escapeHTML(e.age2)+'</div>'+
+    '<p style="margin:12px 0 4px;font-size:14.5px">'+escapeHTML(e.desc)+'</p>'+
+    '<p style="color:var(--muted);font-size:13.5px">💡 '+escapeHTML(e.why)+'</p>'+
+    '<div class="tags-row">'+(e.des||[]).map(t=>'<span class="tag tag-b">'+escapeHTML(t)+'</span>').join('')+'</div>'+
+    '<div class="tags-row">'+(e.inc||[]).map(t=>'<span class="tag tag-g">'+escapeHTML(t)+'</span>').join('')+'</div>'+
+    '<div class="tags-row">'+(e.exc||[]).map(t=>'<span class="tag tag-r">'+escapeHTML(t)+'</span>').join('')+'</div>'+
+    '<div class="modal-actions">'+
+    '<button type="button" class="btn btn-ok" onclick="openSignup('+e.id+')">Записаться на эксперимент</button>'+
+    '<button type="button" class="btn btn-cancel" onclick="closeOv(\'ovDetails\')">Закрыть</button></div>';
+  openOv('ovDetails');
+}
+function openOv(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeOv(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+
+/* ================= CONSENT ================= */
+function openConsent(event){
+  if(event) event.stopPropagation();
+  openOv('ovConsent');
+}
+
+/* ================= SIGNUP ================= */
+let signupExp=null;
+function openSignup(id){signupExp=id;closeOv('ovDetails');openOv('ovSignup')}
+function submitSignup(){
+  const fio=document.getElementById('svFio').value.trim();
+  const age=document.getElementById('svAge').value;
+  const sex=document.getElementById('svSex').value;
+  const mail=document.getElementById('svMail').value.trim();
+  if(!fio||!age||!sex||!mail){toast('Заполните все обязательные поля','err');return}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){toast('Проверьте формат почты','err');return}
+  if(!document.getElementById('svConsent').checked){toast('Отметьте согласие на обработку персональных данных','err');return}
+  const e=experiments.find(x=>x.id===signupExp);
+  volRecords.push({id:Date.now(),status:'pending',exp:e.name,fio,age,sex,mail});
+  closeOv('ovSignup');
+  toast('Заявка отправлена! Подтверждение придёт на почту после одобрения модератором','ok');
+  renderMod();
+}
+
+/* ================= RESEARCHER FORM ================= */
+let resStep=1;
+
+function openResForm(){
+  resStep=1;
+  renderResForm();openOv('ovRes');
+}
+
+function addTag(type, tag) {
+  const inputId = type === 'inc' ? 'rfIncText' : 'rfExcText';
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  let current = input.value.trim();
+  let tags = current ? current.split(',').map(t => t.trim()).filter(t => t.length > 0) : [];
+  
+  const normalizedTag = tag.startsWith('#') ? tag : '#' + tag;
+  if (!tags.includes(normalizedTag)) {
+    tags.push(normalizedTag);
+    input.value = tags.join(', ');
+  }
+}
+
+function renderResForm(){
+  ['st1','st2','st3','st4'].forEach((id,i)=>document.getElementById(id).classList.toggle('active',resStep===i+1));
+  document.getElementById('btnPrev').style.display=resStep>1?'':'none';
+  document.getElementById('btnNext').textContent=resStep<4?'Далее →':'Отправить заявку';
+  const f=document.getElementById('resForm');
+  
+  if(resStep===1) f.innerHTML=
+    '<div class="f-group"><label for="rfMail">Электронная почта <span class="req">*</span></label><input id="rfMail" type="email" placeholder="ivanova@unn.ru" value="'+(window._rfMail||'')+'">'+
+    '<div class="f-hint">Эта форма собирает адреса электронной почты для связи с вами</div></div>';
+    
+  if(resStep===2) f.innerHTML=
+    '<div class="f-group"><label for="rfFio">ФИО (или имя и отчество) <span class="req">*</span></label><input id="rfFio" placeholder="Иванова Мария Сергеевна" value="'+(window._rfFio||'')+'"></div>'+
+    '<div class="f-group"><label for="rfPost">Должность / статус <span class="req">*</span></label><input id="rfPost" placeholder="Аспирант 1 года" value="'+(window._rfPost||'')+'"></div>'+
+    '<div class="f-group"><label for="rfOrg">Организация / факультет / кафедра <span class="req">*</span></label><input id="rfOrg" placeholder="Институт биологии и биомедицины, каф. нейробиологии" value="'+(window._rfOrg||'')+'"></div>';
+    
+  if(resStep===3) f.innerHTML=
+    '<div class="f-group"><label for="rfName">Краткое название эксперимента <span class="req">*</span></label><input id="rfName" placeholder="Влияние музыки на концентрацию" value="'+(window._rfName||'')+'"></div>'+
+    '<div class="f-group"><label for="rfDir">Направление исследования <span class="req">*</span></label><input id="rfDir" placeholder="Психология внимания" value="'+(window._rfDir||'')+'"></div>'+
+    '<div class="f-group"><label for="rfDescr">Описание эксперимента <span class="req">*</span></label><textarea id="rfDescr" placeholder="Простым языком, понятным неспециалисту: что будет происходить и что требуется от испытуемого">'+(window._rfDescr||'')+'</textarea></div>'+
+    '<div class="f-group"><label for="rfWhy">Чем интересен ваш эксперимент для испытуемого? <span class="req">*</span></label><textarea id="rfWhy" placeholder="Уютная атмосфера, новые впечатления, вклад в науку">'+(window._rfWhy||'')+'</textarea></div>'+
+    '<div class="f-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+    '<div><label for="rfDur">Длительность сеанса, мин <span class="req">*</span></label><input id="rfDur" type="number" min="5" placeholder="30" value="'+(window._rfDur||'')+'"></div>'+
+    '<div><label for="rfSess">Количество сеансов <span class="req">*</span></label><input id="rfSess" type="number" min="1" placeholder="1" value="'+(window._rfSess||'')+'"></div></div>'+
+    '<div class="f-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+    '<div><label for="rfD1">Дата начала <span class="req">*</span></label><input id="rfD1" type="date" value="'+(window._rfD1||'')+'"></div>'+
+    '<div><label for="rfD2">Дата окончания <span class="req">*</span></label><input id="rfD2" type="date" value="'+(window._rfD2||'')+'"></div></div>'+
+    '<div class="f-group"><label for="rfTime">Возможное время проведения <span class="req">*</span></label><input id="rfTime" placeholder="10:00–18:00" value="'+(window._rfTime||'')+'"></div>'+
+    '<div class="f-group"><label for="rfPlace">Формат и место проведения <span class="req">*</span></label><input id="rfPlace" placeholder="Очно, ауд. 410, ул. Большая Покровская, 38" value="'+(window._rfPlace||'')+'"></div>';
+    
+  // ШАГ 4: с чекбоксом согласия в самом конце
+  if(resStep===4) f.innerHTML=
+    '<div class="f-group"><label for="rfNeed">Количество нужных испытуемых <span class="req">*</span></label><input id="rfNeed" type="number" min="1" placeholder="15" value="'+(window._rfNeed||'')+'"></div>'+
+    '<div class="f-group" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">'+
+    '<div><label for="rfSex">Пол <span class="req">*</span></label><select id="rfSex"><option value="">—</option><option>Мужской</option><option>Женский</option><option>Любой</option></select></div>'+
+    '<div><label for="rfA1">Возраст от <span class="req">*</span></label><input id="rfA1" type="number" min="14" placeholder="18" value="'+(window._rfA1||'')+'"></div>'+
+    '<div><label for="rfA2">Возраст до <span class="req">*</span></label><input id="rfA2" type="number" max="99" placeholder="35" value="'+(window._rfA2||'')+'"></div></div>'+
+    
+    '<div class="f-group">'+
+      '<label>Критерии включения</label>'+
+      '<div class="f-hint" style="margin:0 0 8px">Нажмите на пример, чтобы добавить, или введите свои через запятую. Можно оставить пустым.</div>'+
+      '<div class="chk-grid" style="margin-bottom:10px;">'+
+        '<span class="tag tag-g" style="cursor:pointer;" onclick="addTag(\'inc\', \'#Правши\')">#Правши</span>'+
+        '<span class="tag tag-g" style="cursor:pointer;" onclick="addTag(\'inc\', \'#Студенты\')">#Студенты</span>'+
+        '<span class="tag tag-g" style="cursor:pointer;" onclick="addTag(\'inc\', \'#18–35 лет\')">#18–35 лет</span>'+
+        '<span class="tag tag-g" style="cursor:pointer;" onclick="addTag(\'inc\', \'#Правши-левши\')">#Правши-левши</span>'+
+        '<span class="tag tag-g" style="cursor:pointer;" onclick="addTag(\'inc\', \'#Иностранный язык\')">#Иностранный язык</span>'+
+      '</div>'+
+      '<input type="text" id="rfIncText" placeholder="Например: #Зрение 1.0, #Без аллергии" value="'+(window._rfIncText||'')+'">'+
+    '</div>'+
+
+    '<div class="f-group">'+
+      '<label>Критерии исключения</label>'+
+      '<div class="f-hint" style="margin:0 0 8px">Нажмите на пример, чтобы добавить, или введите свои через запятую. Можно оставить пустым.</div>'+
+      '<div class="chk-grid" style="margin-bottom:10px;">'+
+        '<span class="tag tag-r" style="cursor:pointer;" onclick="addTag(\'exc\', \'#Курит\')">#Курит</span>'+
+        '<span class="tag tag-r" style="cursor:pointer;" onclick="addTag(\'exc\', \'#Ночные смены\')">#Ночные смены</span>'+
+        '<span class="tag tag-r" style="cursor:pointer;" onclick="addTag(\'exc\', \'#Астигматизм\')">#Астигматизм</span>'+
+        '<span class="tag tag-r" style="cursor:pointer;" onclick="addTag(\'exc\', \'#Кофеин 12ч\')">#Кофеин 12ч</span>'+
+        '<span class="tag tag-r" style="cursor:pointer;" onclick="addTag(\'exc\', \'#Дальтонизм\')">#Дальтонизм</span>'+
+      '</div>'+
+      '<input type="text" id="rfExcText" placeholder="Например: #Беременность, #Приём лекарств" value="'+(window._rfExcText||'')+'">'+
+    '</div>'+
+    
+    /* ===== НОВОЕ: чекбокс согласия для исследователя ===== */
+    '<div class="consent-row"><input type="checkbox" id="rfConsent">'+
+      '<span>Я даю <span class="c-link" onclick="openConsent(event)">согласие</span> на обработку персональных данных</span></div>';
+}
+
+function grabStep(){
+  const v=id=>{const el=document.getElementById(id);if(el)window['_'+id]=el.value.trim()};
+  ['rfMail','rfFio','rfPost','rfOrg','rfName','rfDir','rfDescr','rfWhy','rfDur','rfSess','rfD1','rfD2','rfTime','rfPlace','rfNeed','rfSex','rfA1','rfA2', 'rfIncText', 'rfExcText'].forEach(v);
+}
+
+function resNext(){
+  grabStep();
+  if(resStep===1){
+    if(!window._rfMail||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(window._rfMail)){toast('Укажите корректную почту','err');return}
+  }
+  if(resStep===2&&(!window._rfFio||!window._rfPost||!window._rfOrg)){toast('Заполните обязательные поля','err');return}
+  if(resStep===3&&(!window._rfName||!window._rfDir||!window._rfDescr||!window._rfWhy||!window._rfDur||!window._rfSess||!window._rfD1||!window._rfD2||!window._rfTime||!window._rfPlace)){toast('Заполните обязательные поля','err');return}
+  
+  if(resStep===4){
+    if(!window._rfNeed||!window._rfSex||!window._rfA1||!window._rfA2){toast('Заполните обязательные поля','err');return}
+    
+    /* ===== НОВОЕ: проверка согласия на обработку ПД ===== */
+    if(!document.getElementById('rfConsent').checked){
+      toast('Отметьте согласие на обработку персональных данных','err');
+      return;
+    }
+    
+    const parseTags = (str) => {
+      if (!str) return [];
+      return str.split(',').map(t => {
+        let clean = t.trim();
+        if (clean && !clean.startsWith('#')) clean = '#' + clean;
+        return clean;
+      }).filter(t => t.length > 1);
+    };
+
+    applications.push({id:Date.now(),status:'pending',
+      mail:window._rfMail,fio:window._rfFio,post:window._rfPost,org:window._rfOrg,
+      name:window._rfName,dir:window._rfDir,descr:window._rfDescr,why:window._rfWhy,
+      dur:window._rfDur,sess:window._rfSess,d1:window._rfD1,d2:window._rfD2,time:window._rfTime,
+      place:window._rfPlace,need:window._rfNeed,sex:window._rfSex,age1:window._rfA1,age2:window._rfA2,
+      inc: parseTags(window._rfIncText),
+      exc: parseTags(window._rfExcText),
+      des:['#Опрос']});
+    closeOv('ovRes');
+    toast('Заявка отправлена на модерацию!','ok');
+    renderMod();
+    return;
+  }
+  resStep++;renderResForm();
+}
+function resPrev(){grabStep();if(resStep>1){resStep--;renderResForm()}}
+
+/* ================= MODERATOR ================= */
+function openMod(){
+  document.getElementById('mainPage').style.display='none';
+  document.getElementById('modPage').style.display='block';
+  window.scrollTo({top:0});
+  renderMod();
+}
+function switchTab(t){
+  document.getElementById('tabExp').classList.toggle('active',t==='exp');
+  document.getElementById('tabVol').classList.toggle('active',t==='vol');
+  document.getElementById('modExpList').style.display=t==='exp'?'':'none';
+  document.getElementById('modVolList').style.display=t==='vol'?'':'none';
+}
+function renderMod(){
+  const pe=document.getElementById('modExpList');
+  const pend=applications.filter(a=>a.status==='pending');
+  const done=applications.filter(a=>a.status!=='pending');
+  pe.innerHTML=(pend.length?'':'<p style="color:var(--muted);text-align:center;padding:30px">Нет новых заявок ✅</p>')+
+    pend.map(a=>appCard(a)).join('')+
+    (done.length?'<h3 style="margin:24px 0 12px;font-size:16px;color:var(--muted)">Рассмотренные заявки</h3>':'')+
+    done.map(a=>appCard(a)).join('');
+    
+  const pv=document.getElementById('modVolList');
+  const pv2=volRecords.filter(a=>a.status==='pending');
+  pv.innerHTML=(pv2.length?'':'<p style="color:var(--muted);text-align:center;padding:30px">Нет новых записей ✅</p>')+
+    pv2.map(v=>
+      '<div class="app-card"><div class="top"><span class="nm">'+escapeHTML(v.fio)+'</span>'+
+      '<span class="who">'+escapeHTML(v.age)+' лет · '+escapeHTML(v.sex)+' · '+escapeHTML(v.mail)+'</span></div>'+
+      '<div class="who" style="margin-top:4px">Эксперимент: «'+escapeHTML(v.exp)+'»</div>'+
+      '<div class="app-actions"><button type="button" class="btn-approve" onclick="decVol('+v.id+',1)">Одобрить</button>'+
+      '<button type="button" class="btn-reject" onclick="decVol('+v.id+',0)">Отклонить</button></div></div>').join('');
+}
+function appCard(a){
+  const badge=a.status==='pending'?'<span class="tag tag-b" style="font-size:11px">На рассмотрении</span>':
+    a.status==='ok'?'<span class="tag tag-g" style="font-size:11px">Одобрено</span>':
+    '<span class="tag tag-r" style="font-size:11px">Отклонено</span>';
+  return '<div class="app-card"><div class="top"><span class="nm">'+escapeHTML(a.name)+'</span>'+badge+
+    '<span class="who">· '+escapeHTML(a.fio)+'</span></div>'+
+    '<button type="button" class="btn-details" style="margin-top:12px" onclick="toggleFull('+a.id+')">📄 Открыть анкету</button>'+
+    '<div class="full-form" id="ff'+a.id+'">'+
+      '<div class="ff-grid">'+
+      '<div class="ff-item"><div class="k">Электронная почта</div><div class="v">'+escapeHTML(a.mail)+'</div></div>'+
+      '<div class="ff-item"><div class="k">ФИО исследователя</div><div class="v">'+escapeHTML(a.fio)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Должность / статус</div><div class="v">'+escapeHTML(a.post)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Организация / факультет</div><div class="v">'+escapeHTML(a.org)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Краткое название</div><div class="v">'+escapeHTML(a.name)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Направление</div><div class="v">'+escapeHTML(a.dir)+'</div></div>'+
+      '<div class="ff-item wide"><div class="k">Описание эксперимента</div><div class="v" style="font-weight:400">'+escapeHTML(a.descr)+'</div></div>'+
+      '<div class="ff-item wide"><div class="k">Чем интересен для испытуемого</div><div class="v" style="font-weight:400">'+escapeHTML(a.why)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Длительность сеанса</div><div class="v">'+escapeHTML(a.dur)+' мин</div></div>'+
+      '<div class="ff-item"><div class="k">Количество сеансов</div><div class="v">'+escapeHTML(a.sess)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Дата начала</div><div class="v">'+escapeHTML(a.d1)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Дата окончания</div><div class="v">'+escapeHTML(a.d2)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Время проведения</div><div class="v">'+escapeHTML(a.time)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Место проведения</div><div class="v">'+escapeHTML(a.place)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Количество испытуемых</div><div class="v">'+escapeHTML(a.need)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Пол</div><div class="v">'+escapeHTML(a.sex)+'</div></div>'+
+      '<div class="ff-item"><div class="k">Возраст</div><div class="v">'+escapeHTML(a.age1)+'–'+escapeHTML(a.age2)+'</div></div>'+
+      '<div class="ff-item wide"><div class="k">Критерии включения</div><div class="v">'+(a.inc&&a.inc.length?a.inc.map(t=>'<span class="tag tag-g">'+escapeHTML(t)+'</span>').join(''):'—')+'</div></div>'+
+      '<div class="ff-item wide"><div class="k">Критерии исключения</div><div class="v">'+(a.exc&&a.exc.length?a.exc.map(t=>'<span class="tag tag-r">'+escapeHTML(t)+'</span>').join(''):'—')+'</div></div>'+
+      '</div></div>'+
+    '<div class="app-actions">'+
+    (a.status==='pending'?'<button type="button" class="btn-approve" onclick="decExp('+a.id+',1)">Одобрить</button>'+
+      '<button type="button" class="btn-reject" onclick="decExp('+a.id+',0)">Отклонить</button>':
+      '<span class="who">Решение принято</span>')+'</div></div>';
+}
+function toggleFull(id){document.getElementById('ff'+id).classList.toggle('open')}
+
+function decExp(id,ok){
+  const a=applications.find(x=>x.id===id);
+  a.status=ok?'ok':'no';
+  if(ok){
+    const e=experiments.find(x=>x.name===a.name);
+    if(!e){
+      const dateParts = a.d1.split('.');
+      const dateObj = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+      const dow = isNaN(dateObj.getDay()) ? 0 : dateObj.getDay();
+      
+      experiments.push({id:Date.now(),name:a.name,dir:a.dir,desc:a.descr,why:a.why,
+        dur:a.dur,sess:a.sess,d1:a.d1,d2:a.d2,time:a.time,place:a.place,need:a.need,
+        sex:a.sex,age1:a.age1,age2:a.age2,res:a.fio,org:a.org,mail:a.mail,
+        day:Math.min((dow+6)%7,6),start:10,end:11,
+        inc:a.inc||[],exc:a.exc||[],des:a.des||['#Опрос']});
+    }
+    document.getElementById('cntExp').textContent=experiments.length;
+    toast('Заявка одобрена — эксперимент добавлен в календарь','ok');
+  } else {
+    toast('Заявка отклонена.','err');
+  }
+  renderCal();renderMod();
+}
+function decVol(id,ok){
+  const v=volRecords.find(x=>x.id===id);
+  v.status=ok?'ok':'no';
+  toast(ok?'Запись одобрена, подтверждение отправлено':'Запись отклонена',ok?'ok':'err');
+  renderMod();
+}
+
+/* ================= TOASTS ================= */
+function toast(msg,cls){
+  const t=document.createElement('div');
+  t.className='toast '+(cls||'');
+  t.textContent=msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400)},3800);
+}
+
+/* ================= INIT ================= */
+renderCal();
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show')}),{threshold:.15});
+document.querySelectorAll('.how-card').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>
