@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -91,6 +91,7 @@ section{padding:40px 0}
 .cell.today-col{background:rgba(124,58,237,.05)}
 [data-theme="dark"] .cell.today-col{background:rgba(167,139,250,.07)}
 .cal-empty{text-align:center;color:var(--muted);font-size:13.5px;margin-top:14px}
+
 .exp{margin:3px;padding:7px 8px;border-radius:11px;cursor:pointer;font-size:12.5px;line-height:1.35;
   background:var(--card-solid);border:1.5px solid rgba(124,58,237,.45);box-shadow:0 3px 10px rgba(124,58,237,.18);
   transition:.2s;overflow:hidden}
@@ -246,9 +247,9 @@ footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13.5px;bord
       <div class="sec-sub">Нажмите на карточку эксперимента, чтобы узнать подробности и записаться</div>
 
       <div class="cal-nav">
-        <button type="button" class="icon-btn" onclick="changeWeek(-1)" title="Предыдущая неделя" aria-label="Предыдущая неделя">‹</button>
+        <button type="button" class="icon-btn" onclick="changeWeek(-1)" title="Предыдущая неделя">‹</button>
         <div class="week-label" id="weekLabel">—</div>
-        <button type="button" class="icon-btn" onclick="changeWeek(1)" title="Следующая неделя" aria-label="Следующая неделя">›</button>
+        <button type="button" class="icon-btn" onclick="changeWeek(1)" title="Следующая неделя">›</button>
         <button type="button" class="btn-ghost" onclick="goCurrentWeek()">Текущая неделя</button>
       </div>
 
@@ -334,8 +335,8 @@ footer{text-align:center;padding:30px 0;color:var(--muted);font-size:13.5px;bord
     <h3 id="signupTitle">Записаться на эксперимент</h3>
     <div class="f-group"><label for="svFio">ФИО <span class="req">*</span></label><input id="svFio" placeholder="Иванов Иван Иванович"></div>
     <div class="f-group"><label for="svAge">Возраст <span class="req">*</span></label><input id="svAge" type="number" min="14" max="99" placeholder="20"></div>
-    <div class="f-group"><label for="svSex">Пол <span class="req">*</span></label>
-      <select id="svSex"><option value="">Выберите…</option><option>Мужской</option><option>Женский</option><option>Не указывать</option></select></div>
+    <div class="f-group"><label for="svTime">Удобное время <span class="req">*</span></label><input id="svTime" placeholder="Например: Пн-Пт 14:00-18:00 или утро">
+      <div class="f-hint">Укажите, когда вам удобно прийти на эксперимент</div></div>
     <div class="f-group"><label for="svMail">Электронная почта <span class="req">*</span></label><input id="svMail" type="email" placeholder="ivanov@unn.ru">
       <div class="f-hint">На эту почту придёт подтверждение записи</div></div>
     <div class="consent-row"><input type="checkbox" id="svConsent">
@@ -462,28 +463,31 @@ const experiments=[
  {id:1,name:'Сон и вечерние привычки',dir:'Психология сна',
   desc:'Опрос о режиме сна и вечерних привычках. Заполнение анкеты занимает 15 минут.',
   why:'Участие помогает понять связь сна и успеваемости',
-  dur:'15',sess:'1',date:D(0),d1:ruDate(addDays(WEEK0,0)),d2:ruDate(addDays(WEEK0,14)),time:'10:00–18:00',
+  dur:'15',sess:'1',d1:ruDate(addDays(WEEK0,0)),d2:ruDate(addDays(WEEK0,14)),
   place:'Ауд. 3312, пр. Гагарина, 23',need:20,sex:'Любой',age1:18,age2:25,
   res:'Анна Смирнова, аспирант',org:'Факультет социальных наук, кафедра психологии',
-  mail:'smirnova@unn.ru',start:10,end:12,
+  mail:'smirnova@unn.ru',
+  schedule:{days:null,start:10,end:12,timeStr:'10:00–12:00'},
   inc:['#Студенты'],exc:['#Ночные смены'],des:['#Опрос','#Сон','#Психология'],
   cancelCode: generateCode()},
  {id:2,name:'Зрительное внимание',dir:'Когнитивные исследования',
-  desc:'Компьютерный тест на зрительное внимание. Смотрите на экран и нажимайте кнопку при появлении цели.',
+  desc:'Компьютерный тест на зрительное внимание.',
   why:'Интересный тест, по итогам — расшифровка ваших результатов',
-  dur:'45',sess:'1',date:D(1),d1:ruDate(addDays(WEEK0,1)),d2:ruDate(addDays(WEEK0,15)),time:'11:00–17:00',
+  dur:'45',sess:'1',d1:ruDate(addDays(WEEK0,1)),d2:ruDate(addDays(WEEK0,15)),
   place:'Лаб. 214, пр. Гагарина, 23',need:15,sex:'Любой',age1:18,age2:35,
   res:'Дмитрий Кузнецов, старший преподаватель',org:'Институт биологии и биомедицины',
-  mail:'kuznetsov@unn.ru',start:11,end:13,
+  mail:'kuznetsov@unn.ru',
+  schedule:{days:[1,3],start:11,end:13,timeStr:'Вт, Чт 11:00–13:00'},
   inc:['#Правши','#18–35 лет'],exc:['#Астигматизм'],des:['#Компьютерный тест','#Зрение'],
   cancelCode: generateCode()},
  {id:3,name:'Аудио-тест памяти',dir:'Нейрофизиология',
   desc:'Прослушивание коротких аудиофрагментов и проверка запоминания.',
   why:'Простая и увлекательная процедура, участие в науке',
-  dur:'30',sess:'2',date:D(10),d1:ruDate(addDays(WEEK0,10)),d2:ruDate(addDays(WEEK0,24)),time:'14:00–19:00',
+  dur:'30',sess:'2',d1:ruDate(addDays(WEEK0,10)),d2:ruDate(addDays(WEEK0,24)),
   place:'Ауд. 205, пр. Гагарина, 23',need:25,sex:'Любой',age1:18,age2:30,
   res:'Мария Волкова, магистрант',org:'Институт биологии и биомедицины',
-  mail:'volkova@unn.ru',start:14,end:16,
+  mail:'volkova@unn.ru',
+  schedule:{days:[3],start:14,end:16,timeStr:'Чт 14:00–16:00'},
   inc:['#Правши'],exc:['#Курит'],des:['#Аудио','#Память','#Аудиотест'],
   cancelCode: generateCode()}
 ];
@@ -510,8 +514,8 @@ let applications=[
 ];
 
 let volRecords=[
- {id:201,status:'pending',exp:'Сон и вечерние привычки',fio:'Игорь Морозов',age:21,sex:'Мужской',mail:'morozov@unn.ru'},
- {id:202,status:'pending',exp:'Аудио-тест памяти',fio:'Ксения Лебедева',age:19,sex:'Женский',mail:'lebedeva@nn.ru'}
+ {id:201,status:'pending',exp:'Сон и вечерние привычки',fio:'Игорь Морозов',age:21,time:'Пн-Пт 14:00-18:00',mail:'morozov@unn.ru'},
+ {id:202,status:'pending',exp:'Аудио-тест памяти',fio:'Ксения Лебедева',age:19,time:'утро',mail:'lebedeva@nn.ru'}
 ];
 
 let cancellations=[
@@ -531,24 +535,105 @@ function tagsHtml(e){
          (e.exc||[]).map(t=>'<span class="tag tag-r">'+escapeHTML(t)+'</span>').join('');
 }
 
+/* ===== АЛГОРИТМ РАЗДЕЛЕНИЯ ЯЧЕЕК ПРИ НАЛОЖЕНИИ ===== */
+function calculateDayLayout(events){
+  if(!events.length) return [];
+  
+  // Сортируем по времени начала, потом по длительности (длинные сначала), потом по id
+  events.sort((a,b) => a.s - b.s || (b.span - a.span) || a.e.id - b.e.id);
+  
+  // Распределяем события по колонкам
+  const columns = []; // columns[col] = время окончания последнего события в колонке
+  
+  events.forEach(event => {
+    let placed = false;
+    for(let col = 0; col < columns.length; col++){
+      if(columns[col] <= event.s){
+        columns[col] = event.s + event.span;
+        event.column = col;
+        placed = true;
+        break;
+      }
+    }
+    if(!placed){
+      event.column = columns.length;
+      columns.push(event.s + event.span);
+    }
+  });
+  
+  // Для каждого события определяем максимальное количество одновременных событий в его диапазоне
+  events.forEach(event => {
+    let maxConcurrent = 0;
+    for(let h = event.s; h < event.s + event.span; h++){
+      let count = 0;
+      events.forEach(other => {
+        if(other.s <= h && h < other.s + other.span) count++;
+      });
+      maxConcurrent = Math.max(maxConcurrent, count);
+    }
+    event.totalColumns = maxConcurrent;
+  });
+  
+  // Устанавливаем ширину и позицию
+  events.forEach(event => {
+    event.width = 100 / event.totalColumns;
+    event.left = event.column * event.width;
+  });
+  
+  return events;
+}
+
 function renderCal(){
   const g=document.getElementById('calGrid');
   const ws=viewedWeekStart();
   const wsI=iso(ws), weI=iso(addDays(ws,6)), todayI=iso(new Date());
   document.getElementById('weekLabel').textContent=fmtWeekRange(ws)+(weekOffset===0?' · текущая':'');
 
-  const items=[];
+  const dayEvents = [[],[],[],[],[],[],[]];
+  
   experiments.forEach((e,i)=>{
-    if(!e.date || e.date<wsI || e.date>weI) return;
-    const d=parseAnyDate(e.date); if(!d) return;
-    const col=(d.getDay()+6)%7;
-    const s=Math.max(7,Math.min(21,Number(e.start)||10));
-    const en=Math.max(s+1,Math.min(22,Number(e.end)||s+1));
-    items.push({e,col,s,span:en-s,pal:'c'+(i%3)});
+    if(!e.schedule) return;
+    
+    const expStart = parseAnyDate(e.d1);
+    const expEnd = parseAnyDate(e.d2);
+    if(!expStart || !expEnd) return;
+    
+    const weekEnd = addDays(ws, 6);
+    if(expStart > weekEnd || expEnd < ws) return;
+    
+    for(let dayOffset=0; dayOffset<7; dayOffset++){
+      const currentDate = addDays(ws, dayOffset);
+      
+      if(currentDate < expStart || currentDate > expEnd) continue;
+      
+      const currentDayOfWeek = (currentDate.getDay()+6)%7;
+      
+      if(e.schedule.days !== null && !e.schedule.days.includes(currentDayOfWeek)){
+        continue;
+      }
+      
+      const s = Math.max(7, Math.min(21, Number(e.schedule.start)||10));
+      const en = Math.max(s+1, Math.min(22, Number(e.schedule.end)||s+1));
+      
+      dayEvents[dayOffset].push({
+        e:e,
+        col:dayOffset,
+        s:s,
+        span:en-s,
+        pal:'c'+(i%3),
+        date: currentDate,
+        timeStr: e.schedule.timeStr
+      });
+    }
   });
 
-  const covered=new Set();
-  items.forEach(it=>{for(let k=0;k<it.span;k++)covered.add(it.col+'-'+(it.s+k))});
+  // Рассчитываем layout для каждого дня
+  for(let d=0; d<7; d++){
+    dayEvents[d] = calculateDayLayout(dayEvents[d]);
+  }
+
+  let totalEvents = 0;
+  dayEvents.forEach(day => totalEvents += day.length);
 
   let h='<div class="cal-head cal-corner" style="grid-column:1;grid-row:1"></div>';
   for(let d=0;d<7;d++){
@@ -560,22 +645,37 @@ function renderCal(){
     const r=hr-5;
     h+='<div class="time" style="grid-column:1;grid-row:'+r+'">'+hr+':00</div>';
     for(let d=0;d<7;d++){
-      const it=items.find(x=>x.col===d&&x.s===hr);
-      if(it){
-        h+='<div class="exp exp-'+it.pal+'" role="button" tabindex="0" '+
-           'style="grid-column:'+(d+2)+';grid-row:'+r+' / span '+it.span+'" '+
-           'onclick="openDetails('+it.e.id+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openDetails('+it.e.id+')}">'+
-           '<div class="nm">'+escapeHTML(it.e.name)+'</div><div>'+tagsHtml(it.e)+'</div></div>';
-      } else if(covered.has(d+'-'+hr)){
-        continue;
-      } else {
-        const isToday=iso(addDays(ws,d))===todayI;
-        h+='<div class="cell'+(isToday?' today-col':'')+'" style="grid-column:'+(d+2)+';grid-row:'+r+'"></div>';
-      }
+      const isToday=iso(addDays(ws,d))===todayI;
+      h+='<div class="cell'+(isToday?' today-col':'')+'" style="grid-column:'+(d+2)+';grid-row:'+r+'"></div>';
     }
   }
+  
+  // Размещаем события
+  dayEvents.forEach((events, dayIdx) => {
+    events.forEach(item => {
+      const r = item.s - 5;
+      const col = dayIdx + 2;
+      const isSmall = item.totalColumns > 1;
+      
+      // Формируем время только в часах (без дней недели)
+      const startTime = String(item.e.schedule.start).padStart(2,'0')+':00';
+      const endTime = String(item.e.schedule.end).padStart(2,'0')+':00';
+      const shortTime = startTime+'–'+endTime;
+      
+      h+='<div class="exp exp-'+item.pal+'" role="button" tabindex="0" '+
+         'style="grid-column:'+col+';grid-row:'+r+' / span '+item.span+'; '+
+         'width:calc('+item.width+'% - 6px); margin-left:calc('+item.left+'% + 3px); '+
+         'font-size:11px;padding:4px 6px;'+
+         '" '+
+         'onclick="openDetails('+item.e.id+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openDetails('+item.e.id+')}">'+
+         '<div class="nm" style="font-size:11px;line-height:1.25">'+escapeHTML(item.e.name)+'</div>'+
+         '<div style="font-size:10px;margin-bottom:2px;color:var(--muted);line-height:1.2">'+shortTime+'</div>'+
+         '<div style="font-size:9px;line-height:1.3">'+tagsHtml(item.e)+'</div></div>';
+    });
+  });
+  
   g.innerHTML=h;
-  document.getElementById('calEmpty').style.display=items.length?'none':'block';
+  document.getElementById('calEmpty').style.display=totalEvents?'none':'block';
   document.getElementById('cntExp').textContent=experiments.length;
 }
 
@@ -584,8 +684,6 @@ function goCalendar(){
   document.getElementById('modPage').style.display='none';
   const c=document.getElementById('calendar');
   c.scrollIntoView({behavior:'smooth'});
-  c.style.transition='box-shadow .4s';c.style.boxShadow='0 0 0 4px rgba(124,58,237,.35)';
-  setTimeout(()=>c.style.boxShadow='none',1400);
 }
 function goHome(){
   document.getElementById('mainPage').style.display='block';
@@ -597,12 +695,13 @@ function goHome(){
 function openDetails(id){
   const e=experiments.find(x=>x.id===id);
   if(!e) return;
+  
   document.getElementById('detailsBody').innerHTML=
     '<h3>'+escapeHTML(e.name)+'</h3>'+
     '<div class="meta">🔬 '+escapeHTML(e.dir)+'</div>'+
     '<div class="meta">👤 '+escapeHTML(e.res)+' — '+escapeHTML(e.org)+'</div>'+
-    '<div class="meta">🗓 Ближайший сеанс: <b>'+escapeHTML(humanDate(e.date))+'</b></div>'+
-    '<div class="meta">📅 Набор: '+escapeHTML(e.d1)+' — '+escapeHTML(e.d2)+', время: '+escapeHTML(e.time)+'</div>'+
+    '<div class="meta">📅 Набор: '+escapeHTML(e.d1)+' — '+escapeHTML(e.d2)+'</div>'+
+    '<div class="meta">⏰ Возможное время: <b>'+escapeHTML(e.schedule.timeStr)+'</b></div>'+
     '<div class="meta">📍 '+escapeHTML(e.place)+'</div>'+
     '<div class="meta">⏱ Сеанс: '+escapeHTML(e.dur)+' мин × '+escapeHTML(e.sess)+', нужно испытуемых: '+escapeHTML(e.need)+'</div>'+
     '<div class="meta">👥 Пол: '+escapeHTML(e.sex)+', возраст: '+escapeHTML(e.age1)+'–'+escapeHTML(e.age2)+'</div>'+
@@ -642,16 +741,16 @@ function openSignup(id){
 function submitSignup(){
   const fio=document.getElementById('svFio').value.trim();
   const age=document.getElementById('svAge').value;
-  const sex=document.getElementById('svSex').value;
+  const time=document.getElementById('svTime').value.trim();
   const mail=document.getElementById('svMail').value.trim();
-  if(!fio||!age||!sex||!mail){toast('Заполните все обязательные поля','err');return}
+  if(!fio||!age||!time||!mail){toast('Заполните все обязательные поля','err');return}
   if(!MAIL_RE.test(mail)){toast('Проверьте формат почты','err');return}
   if(!document.getElementById('svConsent').checked){toast('Отметьте согласие на обработку персональных данных','err');return}
   const e=experiments.find(x=>x.id===signupExp);
   if(!e){toast('Эксперимент больше недоступен','err');closeOv('ovSignup');return}
-  volRecords.push({id:Date.now(),status:'pending',exp:e.name,fio,age,sex,mail});
+  volRecords.push({id:Date.now(),status:'pending',exp:e.name,fio,age,time,mail});
   closeOv('ovSignup');
-  ['svFio','svAge','svSex','svMail'].forEach(i=>document.getElementById(i).value='');
+  ['svFio','svAge','svTime','svMail'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('svConsent').checked=false;
   toast('Заявка отправлена! Подтверждение придёт на почту после одобрения модератором','ok');
   renderMod();
@@ -664,7 +763,7 @@ function openWithdraw(id){
   if(!e) return;
   withdrawExp=id;
   closeOv('ovDetails');
-  document.getElementById('wExpInfo').innerHTML='Эксперимент: <b>'+escapeHTML(e.name)+'</b><br>Сеанс: '+escapeHTML(humanDate(e.date));
+  document.getElementById('wExpInfo').innerHTML='Эксперимент: <b>'+escapeHTML(e.name)+'</b>';
   document.getElementById('wFio').value='';
   document.getElementById('wCode').value='';
   document.getElementById('wReason').value='';
@@ -696,7 +795,6 @@ function submitWithdraw(){
 let resStep=1;
 function openResForm(){resStep=1;renderResForm();openOv('ovRes')}
 
-/* ===== ОБНОВЛЕНО: поддержка трёх типов тегов ===== */
 function addTag(type,tag){
   const inputId = type==='inc' ? 'rfIncText' : type==='exc' ? 'rfExcText' : 'rfDesText';
   const input=document.getElementById(inputId);
@@ -732,11 +830,15 @@ function renderResForm(){
     '<div class="f-group" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
     '<div><label for="rfD1">Дата начала <span class="req">*</span></label><input id="rfD1" type="date" value="'+escapeHTML(window._rfD1||'')+'"></div>'+
     '<div><label for="rfD2">Дата окончания <span class="req">*</span></label><input id="rfD2" type="date" value="'+escapeHTML(window._rfD2||'')+'"></div></div>'+
-    '<div class="f-hint" style="margin:-6px 0 12px">Дата начала попадёт в календарь как день сеанса</div>'+
-    '<div class="f-group"><label for="rfTime">Возможное время проведения <span class="req">*</span></label><input id="rfTime" placeholder="10:00–18:00" value="'+escapeHTML(window._rfTime||'')+'"></div>'+
+    
+    '<div class="f-group">'+
+      '<label for="rfTime">Возможное время проведения <span class="req">*</span></label>'+
+      '<div class="f-hint" style="margin:0 0 8px">Если даты совпадают: <i>13:00</i> или <i>12:30 - 19:00</i>. Если даты разные: <i>10:00 - 12:00</i> (каждый день) или <i>Пн 18:00 - 20:00; Ср 10:00 - 12:00</i> или <i>Пн, Ср, Сб 14:00 - 15:30</i></div>'+
+      '<textarea id="rfTime" placeholder="Пн 18:00 - 20:00; Ср 10:00 - 12:00" style="min-height:50px">'+escapeHTML(window._rfTime||'')+'</textarea>'+
+    '</div>'+
+
     '<div class="f-group"><label for="rfPlace">Формат и место проведения <span class="req">*</span></label><input id="rfPlace" placeholder="Очно, ауд. 410, ул. Большая Покровская, 38" value="'+escapeHTML(window._rfPlace||'')+'"></div>';
 
-  /* ===== ШАГ 4: с тремя полями тегов ===== */
   if(resStep===4) f.innerHTML=
     '<div class="f-group"><label for="rfNeed">Количество нужных испытуемых <span class="req">*</span></label><input id="rfNeed" type="number" min="1" placeholder="15" value="'+escapeHTML(window._rfNeed||'')+'"></div>'+
     '<div class="f-group" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">'+
@@ -767,10 +869,9 @@ function renderResForm(){
       '<input type="text" id="rfExcText" placeholder="Например: #Беременность" value="'+escapeHTML(window._rfExcText||'')+'">'+
     '</div>'+
 
-    /* ===== НОВОЕ: Ключевые слова для описания ===== */
     '<div class="f-group">'+
       '<label for="rfDesText">Ключевые слова для описания</label>'+
-      '<div class="f-hint" style="margin:0 0 8px">Опишите, о чём ваше исследование. Эти слова станут синими хэштегами в карточке эксперимента. Можно оставить пустым.</div>'+
+      '<div class="f-hint" style="margin:0 0 8px">Опишите, о чём ваше исследование. Эти слова станут синими хэштегами в карточке эксперимента.</div>'+
       '<div class="chk-grid" style="margin-bottom:10px">'+
         '<span class="tag tag-b" style="cursor:pointer" onclick="addTag(\'des\',\'#Опрос\')">#Опрос</span>'+
         '<span class="tag tag-b" style="cursor:pointer" onclick="addTag(\'des\',\'#Сон\')">#Сон</span>'+
@@ -811,15 +912,96 @@ function parseTags(str){
   return out;
 }
 
+function parseSchedule(text){
+  if(!text) return null;
+  text = text.trim();
+  
+  const dayMap = {'пн':0,'вт':1,'ср':2,'чт':3,'пт':4,'сб':5,'вс':6};
+  
+  let days = null;
+  
+  const dayPattern = /([пнвсч][т])\s*(?:,\s*([пнвсч][т])\s*)*(\d{1,2}:\d{2}\s*[-–]\s*\d{1,2}:\d{2})/gi;
+  const matches = [...text.matchAll(dayPattern)];
+  
+  if(matches.length > 0){
+    days = [];
+    let startTime = null, endTime = null;
+    
+    matches.forEach(m => {
+      const fullMatch = m[0];
+      const timeMatch = fullMatch.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/);
+      if(timeMatch){
+        const s = parseInt(timeMatch[1]) + parseInt(timeMatch[2])/60;
+        const e = parseInt(timeMatch[3]) + parseInt(timeMatch[4])/60;
+        if(startTime === null || s < startTime) startTime = s;
+        if(endTime === null || e > endTime) endTime = e;
+      }
+      
+      const dayMatches = fullMatch.match(/[пнвсч][т]/gi);
+      if(dayMatches){
+        dayMatches.forEach(d => {
+          const dayNum = dayMap[d.toLowerCase()];
+          if(dayNum !== undefined && !days.includes(dayNum)){
+            days.push(dayNum);
+          }
+        });
+      }
+    });
+    
+    if(startTime !== null && endTime !== null){
+      return {
+        days: days.length > 0 ? days : null,
+        start: Math.floor(startTime),
+        end: Math.ceil(endTime),
+        timeStr: text
+      };
+    }
+  } else {
+    const timeMatch = text.match(/(\d{1,2}):(\d{2})\s*[-–]\s*(\d{1,2}):(\d{2})/);
+    if(timeMatch){
+      const startH = parseInt(timeMatch[1]);
+      const startM = parseInt(timeMatch[2]);
+      const endH = parseInt(timeMatch[3]);
+      const endM = parseInt(timeMatch[4]);
+      return {
+        days: null,
+        start: startH,
+        end: endH + (endM > 0 ? 1 : 0),
+        timeStr: text
+      };
+    }
+    
+    const singleTime = text.match(/(\d{1,2}):(\d{2})/);
+    if(singleTime){
+      const h = parseInt(singleTime[1]);
+      return {
+        days: null,
+        start: h,
+        end: h + 1,
+        timeStr: text
+      };
+    }
+  }
+  
+  return null;
+}
+
 function resNext(){
   grabStep();
   if(resStep===1 && (!window._rfMail||!MAIL_RE.test(window._rfMail))){toast('Укажите корректную почту','err');return}
   if(resStep===2 && (!window._rfFio||!window._rfPost||!window._rfOrg)){toast('Заполните обязательные поля','err');return}
   if(resStep===3){
     if(!window._rfName||!window._rfDir||!window._rfDescr||!window._rfWhy||!window._rfDur||!window._rfSess||!window._rfD1||!window._rfD2||!window._rfTime||!window._rfPlace){toast('Заполните обязательные поля','err');return}
+    
     const a=parseAnyDate(window._rfD1), b=parseAnyDate(window._rfD2);
     if(!a||!b){toast('Проверьте даты','err');return}
     if(b<a){toast('Дата окончания не может быть раньше даты начала','err');return}
+    
+    const schedule = parseSchedule(window._rfTime);
+    if(!schedule){
+      toast('Не удалось распознать время. Используйте формат: 10:00 - 12:00 или Пн 18:00 - 20:00','err');
+      return;
+    }
   }
   if(resStep===4){
     if(!window._rfNeed||!window._rfSex||!window._rfA1||!window._rfA2){toast('Заполните обязательные поля','err');return}
@@ -827,16 +1009,19 @@ function resNext(){
     const c=document.getElementById('rfConsent');
     if(!c||!c.checked){toast('Отметьте согласие на обработку персональных данных','err');return}
 
-    /* ===== Используем ключевые слова из формы, либо дефолт ===== */
     const desTags = parseTags(window._rfDesText);
     const finalDes = desTags.length ? desTags : ['#Опрос'];
+    const schedule = parseSchedule(window._rfTime);
 
     applications.push({id:Date.now(),status:'pending',
       mail:window._rfMail,fio:window._rfFio,post:window._rfPost,org:window._rfOrg,
       name:window._rfName,dir:window._rfDir,descr:window._rfDescr,why:window._rfWhy,
-      dur:window._rfDur,sess:window._rfSess,d1:window._rfD1,d2:window._rfD2,time:window._rfTime,
+      dur:window._rfDur,sess:window._rfSess,d1:window._rfD1,d2:window._rfD2,
+      time:window._rfTime,
       place:window._rfPlace,need:window._rfNeed,sex:window._rfSex,age1:window._rfA1,age2:window._rfA2,
-      inc:parseTags(window._rfIncText),exc:parseTags(window._rfExcText),des:finalDes});
+      inc:parseTags(window._rfIncText),exc:parseTags(window._rfExcText),des:finalDes,
+      schedule: schedule
+    });
     closeOv('ovRes');
     toast('Заявка отправлена на модерацию!','ok');
     renderMod();
@@ -888,7 +1073,7 @@ function renderMod(){
     (pv.length?'':emptyMsg('Нет новых записей ✅'))+
     pv.map(v=>
       '<div class="app-card"><div class="top"><span class="nm">'+escapeHTML(v.fio)+'</span>'+
-      '<span class="who">'+escapeHTML(v.age)+' лет · '+escapeHTML(v.sex)+' · '+escapeHTML(v.mail)+'</span></div>'+
+      '<span class="who">'+escapeHTML(v.age)+' лет · '+escapeHTML(v.time)+' · '+escapeHTML(v.mail)+'</span></div>'+
       '<div class="who" style="margin-top:4px">Эксперимент: «'+escapeHTML(v.exp)+'»</div>'+
       '<div class="app-actions"><button type="button" class="btn-approve" onclick="decVol('+v.id+',1)">Одобрить</button>'+
       '<button type="button" class="btn-reject" onclick="decVol('+v.id+',0)">Отклонить</button></div></div>').join('')+
@@ -924,7 +1109,8 @@ function appCard(a){
       ffWide('Описание эксперимента',a.descr)+ffWide('Чем интересен для испытуемого',a.why)+
       ff('Длительность сеанса',a.dur+' мин')+ff('Количество сеансов',a.sess)+
       ff('Дата начала',humanDate(a.d1))+ff('Дата окончания',ruDate(parseAnyDate(a.d2)||new Date()))+
-      ff('Время проведения',a.time)+ff('Место проведения',a.place)+
+      ff('Возможное время',a.time)+
+      ff('Место проведения',a.place)+
       ff('Количество испытуемых',a.need)+ff('Пол',a.sex)+
       ff('Возраст',a.age1+'–'+a.age2)+
       '<div class="ff-item wide"><div class="k">Критерии включения</div><div class="v">'+
@@ -963,7 +1149,6 @@ function cancelCard(c){
 
 function toggleFull(id){document.getElementById('ff'+id).classList.toggle('open')}
 
-/* ===== ИСПРАВЛЕННАЯ ФУНКЦИЯ ОДОБРЕНИЯ ===== */
 function decExp(id,ok){
   const a=applications.find(x=>x.id===id);
   if(!a||a.status!=='pending') return;
@@ -980,10 +1165,10 @@ function decExp(id,ok){
     const newCode = generateCode();
     experiments.push({
       id:Date.now(), name:a.name, dir:a.dir, desc:a.descr, why:a.why,
-      dur:a.dur, sess:a.sess, date:iso(d), d1:ruDate(d),
-      d2:ruDate(parseAnyDate(a.d2)||d), time:a.time, place:a.place, need:a.need,
+      dur:a.dur, sess:a.sess, d1:a.d1, d2:a.d2,
+      place:a.place, need:a.need,
       sex:a.sex, age1:a.age1, age2:a.age2, res:a.fio, org:a.org, mail:a.mail,
-      start:10, end:11,
+      schedule: a.schedule || {days:null,start:10,end:11,timeStr:a.time},
       inc:a.inc||[], exc:a.exc||[], des:a.des||['#Опрос'],
       cancelCode: newCode
     });
